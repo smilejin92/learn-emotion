@@ -270,7 +270,7 @@ export const EmotionCompString = ({ children }: EmotionCompProps) => (
 >
 > `@emotion/react` 패키지의 `css` 함수는 객체를 반환한다. 해당 객체는 계산된 클래스 이름과, flattened 스타일 정보를 포함한다. 이 객체는 `css` prop 안에서 다른 emotion style과 조합하여 사용될 수 있고, 다른 `css` 함수 콜과 사용될 수 있으며, `styled` API와도 함께 사용될 수 있다.
 >
-> <img src="/Users/smilejin92/Library/Application Support/typora-user-images/Screen Shot 2021-07-19 at 9.16.15 PM.png" alt="Screen Shot 2021-07-19 at 9.16.15 PM" style="zoom:50%;" />
+> <img src="https://user-images.githubusercontent.com/32444914/126188652-e08e6e84-ea7c-4075-a355-0de15002ccfd.png" alt="Screen Shot 2021-07-19 at 9.16.15 PM" style="zoom:50%;" />
 
 &nbsp;
 
