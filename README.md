@@ -273,3 +273,58 @@ export const EmotionCompString = ({ children }: EmotionCompProps) => (
 > <img src="/Users/smilejin92/Library/Application Support/typora-user-images/Screen Shot 2021-07-19 at 9.16.15 PM.png" alt="Screen Shot 2021-07-19 at 9.16.15 PM" style="zoom:50%;" />
 
 &nbsp;
+
+## 스타일 우선 순위
+
+- Class names containing emotion styles from the `className` prop override `css` prop styles.
+- Class names from sources other than emotion are ignored and appended to the computed emotion class name.
+
+부모로부터 전달받은 `className` prop을 통해 emotion 컴포넌트(`css` prop으로 스타일된)의 스타일을 커스텀 할 수 있다.
+
+&nbsp;
+
+아래 예제에서 `P` 컴포넌트의 스타일은 `ArticleText` 컴포넌트의 스타일에 의해 override된다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { ComponentPropsWithoutRef } from 'react';
+
+type ParagraphComponentProps = ComponentPropsWithoutRef<'p'>;
+
+export const P = ({ children, ...rest }: ParagraphComponentProps) => (
+  <p
+    css={{
+      margin: 0,
+      fontSize: 12,
+      lineHeight: '1.5',
+      fontFamily: 'sans-serif',
+      color: 'black',
+    }}
+    {...rest} // <- props contains the `className` prop
+  >
+    {children}
+  </p>
+);
+
+export const ArticleText = ({ children, ...rest }: ParagraphComponentProps) => (
+  <P
+    css={{
+      fontSize: 14,
+      fontFamily: 'Georgia, serif',
+      color: 'darkgray',
+    }}
+    {...rest} // <- props contains the `className` prop
+  >
+    {children}
+  </P>
+);
+
+// result
+// {
+//   margin: 0,
+//   fontSize: 14,
+//   lineHeight: '1.5',
+//   fontFamily: 'Georgia, serif',
+//   color: 'darkgray',
+// }
+```
