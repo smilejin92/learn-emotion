@@ -391,3 +391,143 @@ export default function App() {
 
 &nbsp;
 
+## [Styled Component](https://emotion.sh/docs/styled)
+
+**1. 요소, 컴포넌트 스타일링**
+
+html tag 혹은 React 컴포넌트를 불러와 스타일을 작성한다. 템플릿 리터럴 스타일, 혹은 일반 함수를 통해 스타일 객체를 전달 할 수 있다.
+
+```tsx
+import styled from '@emotion/styled';
+
+export const Button = styled.button`
+  color: turquoise;
+`;
+
+export const PrimaryButton = styled(Button)`
+  color: hotpink;
+`;
+
+export const DangerButton = styled(Button)((props) => ({
+  color: 'red',
+}));
+
+```
+
+&nbsp;  
+
+**2. prop을 통해 스타일 추가**
+
+```tsx
+import styled from '@emotion/styled'
+
+const Button = styled.button`
+  color: ${props =>
+    props.primary ? 'hotpink' : 'turquoise'};
+`
+
+const Container = styled.div(props => ({
+  display: 'flex',
+  flexDirection: props.column && 'column'
+}))
+
+const H1 = styled.h1(
+  {
+    fontSize: 20
+  },
+  props => ({ color: props.color })
+)
+
+render(
+  <Container column>
+    <H1 color="lightgreen">This is lightgreen.</H1>
+    <Button>This is a regular button.</Button>
+    <Button primary>This is a primary button.</Button>
+  </Container>
+)
+```
+
+&nbsp;  
+
+**3. `className` prop을 사용하는 컴포넌트라면 모두 스타일링 가능**
+
+```tsx
+import styled from '@emotion/styled'
+
+const Basic = ({ className }) => (
+  <div className={className}>Some text</div>
+);
+
+const Fancy = styled(Basic)`
+  color: hotpink;
+`
+
+render(<Fancy />)
+```
+
+&nbsp;  
+
+**4. `withComponent` 메소드를 사용하여 렌더되는 태그를 변경 가능**
+
+```tsx
+import styled from '@emotion/styled'
+
+const Section = styled.section`
+  background: #333;
+  color: #fff;
+`
+// Section 컴포넌트와 동일한 스타일을 가지고 있지만, 사용되는 태그는 aside이다.
+const Aside = Section.withComponent('aside')
+
+render(
+  <div>
+    <Section>This is a section</Section>
+    <Aside>This is an aside</Aside>
+  </div>
+)
+```
+
+&nbsp;  
+
+**5. emotion 컴포넌트 타겟팅**
+
+`@emotion/babel-plugin` 셋팅이 되어있다면, emotion 컴포넌트를 css 선택자처럼 선택하여 스타일을 작성 할 수 있다.
+
+```tsx
+import styled from '@emotion/styled'
+
+const Child = styled.div`
+  color: red;
+`
+
+const Parent = styled.div`
+  ${Child} {
+    color: green;
+  }
+`
+
+// 혹은 아래와 같이 객체 스타일도 사용 가능
+const Child = styled.div({
+  color: 'red'
+})
+
+const Parent = styled.div({
+  [Child]: {
+    color: 'green'
+  }
+})
+
+render(
+  <div>
+    <Parent>
+      <Child>Child 컴포넌트 in Parent</Child>
+    </Parent>
+    <Child>Child 컴포넌트</Child>
+  </div>
+)
+```
+
+더 많은 기능은 [이 곳](https://emotion.sh/docs/styled)에서 확인 가능
+
+&nbsp;  
+
