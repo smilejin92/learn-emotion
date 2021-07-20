@@ -15,7 +15,7 @@ css-in-js 중 하나. emotion을 사용하는 방법은 크게 2가지이다.
 npm i @emotion/css
 ```
 
-- 모든 자바스크립트 프로젝트에서 사용 가능
+- 프레임워크에 관계 없이 사용 가능
 - babel plugin 및 기타 설정 필요 X
 - auto vendor-prefixing, 중첩 선택자, media query 지원
 - `css` 함수를 사용하여 클래스 이름을 생성, `cx` 함수를 사용하여 클래스를 조합
@@ -276,14 +276,9 @@ export const EmotionCompString = ({ children }: EmotionCompProps) => (
 
 ## 스타일 우선 순위
 
-- Class names containing emotion styles from the `className` prop override `css` prop styles.
-- Class names from sources other than emotion are ignored and appended to the computed emotion class name.
+**1. `className` prop으로 전달된 emotion 스타일은 `css` prop에 전달된 스타일을 override한다.**
 
-부모로부터 전달받은 `className` prop을 통해 emotion 컴포넌트(`css` prop으로 스타일된)의 스타일을 커스텀 할 수 있다.
-
-&nbsp;
-
-아래 예제에서 `P` 컴포넌트의 스타일은 `ArticleText` 컴포넌트의 스타일에 의해 override된다.
+예를 들어, 아래 `P` 컴포넌트와 `Article` 컴포넌트를 각각 `App` 컴포넌트에서 렌더해보자.
 
 ```tsx
 /** @jsxImportSource @emotion/react */
@@ -300,7 +295,7 @@ export const P = ({ children, ...rest }: ParagraphComponentProps) => (
       fontFamily: 'sans-serif',
       color: 'black',
     }}
-    {...rest} // <- props contains the `className` prop
+    {...rest}
   >
     {children}
   </p>
@@ -319,12 +314,80 @@ export const ArticleText = ({ children, ...rest }: ParagraphComponentProps) => (
   </P>
 );
 
-// result
-// {
-//   margin: 0,
-//   fontSize: 14,
-//   lineHeight: '1.5',
-//   fontFamily: 'Georgia, serif',
-//   color: 'darkgray',
-// }
+export default function App() {
+  return (
+    <>
+      <P>normal text</P>
+      <ArticleText>article text</ArticleText>
+    </>
+  );
+}
 ```
+
+먼저 `P` 컴포넌트의 세부사항을 살펴보면 아래와 같다.
+
+<img src="https://user-images.githubusercontent.com/32444914/126280921-5f8d9b0f-fbe5-464e-85ab-6349bc48eade.png" alt="Screen Shot 2021-07-20 at 4.07.23 PM" style="zoom:50%;" />
+
+`p` 요소에 `css` prop으로 전달한 스타일을 위와 같이 확인 할 수 있다. 그렇다면 `P` 컴포넌트를 사용하는 `ArticleText` 컴포넌트는 어떨까? 아래 이미지를 확인해보자.
+
+<img src="https://user-images.githubusercontent.com/32444914/126280995-4ff49de3-80b8-4ff5-951e-85b070e95318.png" alt="Screen Shot 2021-07-20 at 4.07.35 PM" style="zoom:50%;" />
+
+먼저 `P` 컴포넌트의 `css` prop에 전달한 스타일을 위 이미지 좌측에서 확인 할 수 있다. 이 스타일은 `P` 컴포넌트의 `className` prop으로 전달된다(위 이미지 형광색 화살표 참고). `className` prop으로 전달된 emotion 스타일은 `p` 요소의 `css` prop에 작성된 스타일을 override한다. 따라서 `ArticleText` 컴포넌트의 최종 스타일은 아래와 같다.
+
+* <del>color: black</del>
+* color: dartgray
+* <del>fontFamily: "sans-serif"</del>
+* fontFamily: "Geogia, serif"
+* <del>fontSize: 12</del>
+* fontSize: 14
+* lineHeight: "1.5"
+* margin: 0
+
+즉, 부모로부터 전달받은 `className` prop을 통해 emotion 컴포넌트(`css` prop으로 스타일된)의 스타일을 커스텀 할 수 있다.
+
+&nbsp;  
+
+**2. emotion 스타일이 아닌 클래스 이름을 `className` prop에 전달하면, 해당 클래스 이름은 emotion 클래스 이름에 append되며, 스타일은 무시된다.**
+
+위에서 사용한 `ArticleText` 컴포넌트에 emotion 스타일이 아닌 클래스 이름을 추가해보자.
+
+```css
+/* App.css */
+.non-emotion-style {
+  color: blue;
+}
+```
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { ComponentPropsWithoutRef } from 'react';
+import './App.css'; // 전역 스타일 import
+
+type ParagraphComponentProps = ComponentPropsWithoutRef<'p'>;
+
+export const ArticleText = ({ children, ...rest }: ParagraphComponentProps) => (
+  <P
+    css={{
+      fontSize: 14,
+      fontFamily: 'Georgia, serif',
+      color: 'darkgray',
+    }}
+    {...rest} // <- props contains the `className` prop
+  >
+    {children}
+  </P>
+);
+
+export default function App() {
+  return (
+    <div>
+      <ArticleText className="non-emotion-style">article text</ArticleText>
+    </div>
+  );
+}
+```
+
+<img src="https://user-images.githubusercontent.com/32444914/126281129-e838172f-e7b6-4fdd-b7c3-7a8cf1f643d9.png" alt="Screen Shot 2021-07-20 at 4.31.40 PM" style="zoom:50%;" />
+
+&nbsp;
+
