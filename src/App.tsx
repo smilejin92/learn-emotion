@@ -2,6 +2,8 @@
 import { css } from '@emotion/react';
 import './App.css';
 import { EmotionCompObj, EmotionCompString } from './components/Emotion';
+import { NestedStyle } from './components/NestedSelector';
+import { ResponsiveComp1, ResponsiveComp2 } from './components/ResponsiveComps';
 import {
   Button,
   Child,
@@ -40,6 +42,9 @@ function App() {
           danger 클래스가 더 나중에 전달되었기 때문에 color는 red이다.
         </div>
       </div>
+      <NestedStyle />
+      <ResponsiveComp1 />
+      <ResponsiveComp2 />
     </div>
   );
 }
