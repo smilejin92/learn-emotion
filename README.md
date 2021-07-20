@@ -531,3 +531,53 @@ render(
 
 &nbsp;  
 
+## Composition
+
+스타일 조합(composition)은 emotion의 가장 유용한 기능 중 하나이다. `css` 함수가 반환한 emotion 스타일 객체를 다른 스타일 블록 안에서 인터폴레이팅(interpolating)을 통해 조합 할 수 있다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+const baseStyle = css`
+	color: hotpink;
+`;
+
+render(
+	<div
+  	css={css`
+			${base}
+			background-color: #eee;
+		`}  	
+  >
+  	This is hotpink.
+  </div>
+);
+```
+
+Emotion 스타일 조합 시 스타일 선언 시점은 의미가 없다. 예를 들어 아래와 같이 `danger` 스타일을 먼저 선언한 후 `base` 스타일을 선언해도, `css` prop에 전달하는 순서에 따라 스타일 우선 순위가 결정된다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+const dangerStyle = css`
+	color: red;
+`;
+
+const baseStyle = css`
+	color: turquoise;
+	background-color: darkgreen;
+`;
+
+render(
+	<div>
+  	<div css={baseStyle}>color는 turquoise이다.</div>
+    <div css={[dangerStyle, baseStyle]}>base 클래스가 더 나중에 전달되었기 때문에 color는 turquoise이다.</div>
+    <div css={[baseStyle, dangerStyle]}>danger 클래스가 더 나중에 전달되었기 때문에 color는 red이다.</div>
+  </div>
+);
+```
+
+&nbsp;  
+
