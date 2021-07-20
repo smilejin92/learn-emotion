@@ -581,3 +581,136 @@ render(
 
 &nbsp;  
 
+## [Object 스타일](https://emotion.sh/docs/object-styles)
+
+css 프로퍼티를 camelCase로 작성한다. obejct 스타일의 장점 중 하나는 `css` 함수를 사용하지 않고 `css` prop에 스타일 객체를 전달 할 수 있다는 것이다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+
+render(
+	<div
+  	css={{
+      color: 'darkorchid',
+      backgroundColor: 'lightgray',
+    }}
+  >
+    This is darkorchid.
+  </div>
+)
+```
+
+더 많은 예제는 [이 곳](https://emotion.sh/docs/object-styles)에서 확인 가능
+
+&nbsp;  
+
+## 중첩 선택자
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+const paragraph = css`
+  color: turquoise;
+
+  & a {
+    color: currentColor;
+    border-bottom: 1px solid currentColor;
+    cursor: pointer;
+  }
+`;
+
+export const NestedStyle = () => (
+  <p css={paragraph}>
+    <a href="/">a 태그는 중첩 선택자에 의해 스타일됨</a>
+  </p>
+);
+
+```
+
+&nbsp;  
+
+## Media Queries
+
+css에서 사용하는 방법 그대로 emotion의 css 블록 안에 작성하면된다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+render(
+  <p
+    css={css`
+      font-size: 30px;
+      @media (min-width: 420px) {
+        font-size: 50px;
+      }
+    `}
+  >
+    Some text!
+  </p>
+)
+
+// obejct 스타일
+render(
+  <p
+    css={{
+      fontSize: 30,
+      '@media(min-width: 420px)': {
+        fontSize: 50,
+      },
+    }}
+  >
+    Some text!
+  </p>
+)
+```
+
+&nbsp;  
+
+media query를 재사용 가능한 형태로 만들어서 사용 할 수 있다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+
+const breakpoints = [576, 768, 992, 1200];
+
+const mq = breakpoints.map(
+  bp => `@media (min-width: ${bp}px)`
+);
+
+render(
+  <div>
+    <div
+      css={{
+        color: 'green',
+        [mq[0]]: {
+          color: 'gray'
+        },
+        [mq[1]]: {
+          color: 'hotpink'
+        }
+      }}
+    >
+      Some text!
+    </div>
+    <p
+      css={css`
+        color: green;
+        ${mq[0]} {
+          color: gray;
+        }
+        ${mq[1]} {
+          color: hotpink;
+        }
+      `}
+    >
+      Some other text!
+    </p>
+  </div>
+)
+```
+
+&nbsp;  
+
