@@ -714,3 +714,30 @@ render(
 
 &nbsp;  
 
+## 전역 스타일
+
+css reset, css normalize, font-face 등 전역 스타일을 추가해야 할 경우가 있다. 이때 emotion의 `Global` 컴포넌트를 사용하여 전역 스타일을 추가 할 수 있다. `Global` 컴포넌트의 `styles` prop에 emotion 스타일 객체를 전달하여 전역 스타일을 추가한다.
+
+```tsx
+import { Global, css } from '@emotion/react'
+
+export default function App() {
+  return (
+ 		<>
+    	<Global
+      	styles={css`
+					#root {
+						font-size: 14px;
+						margin: 0;
+						padding: 0;
+					}
+				`}  
+      />
+    	<div>
+    		{/* ... */}
+    	</div>
+    </>
+  )
+}
+```
+
