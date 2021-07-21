@@ -741,3 +741,160 @@ export default function App() {
 }
 ```
 
+&nbsp;  
+
+## Keyframes
+
+`@emotion/react` 패키지의 `keyframes` 함수를 사용하여 애니메이션을 정의 할 수 있다. `keyframes` 함수는 문자열 스타일, 객체 스타일 모두 허용하며, 반환하는 객체는 emotion 스타일과 함께 사용될 수 있다.
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css, keyframes } from '@emotion/react';
+
+const bounce = keyframes`
+	from, 20%, 53%, 80%, to {
+		transform: translated3d(0, 0, 0);
+	}
+
+	40%, 43% {
+		transform: translate3d(0, -30px, 0);
+	}
+
+	70% {
+		transform: translate3d(0, -15px, 0);
+	}
+
+	90% {
+		transform: translate3d(0, -4px, 0);
+	}
+`;
+
+const bounce = keyframes({
+  'from, 20%, 53%, 80%, to': {
+    transform: 'translated3d(0, 0, 0)',
+  },
+  '40%, 43%': {
+    transform: 'translate3d(0, -30px, 0)',
+  },
+  '70%': {
+    transform: 'translate3d(0, -15px, 0)',
+  },
+  '90%': {
+    transform: 'translate3d(0, -4px, 0)',
+  },
+});
+
+render(
+	<div css={css`
+		animation: ${bounce} 1s ease infinite;
+	`}>
+  	bouncing text
+  </div>
+);
+```
+
+&nbsp;  
+
+## Theming
+
+`ThemeProvider` 컴포넌트를 컴포넌트 트리 최상단에 작성하여 하위 컴포넌트에서 theme 객체를 사용 할 수 있다. 단, TypeScript를 사용 할 경우 theme 객체의 타입을 정의해야한다.
+
+```typescript
+// emotion.d.ts
+import '@emotion/react'
+
+declare module '@emotion/react' {
+  export interface Theme {
+    color: {
+      primary: string
+      positive: string
+      negative: string
+    }
+  }
+}
+```
+
+&nbsp;  
+
+**1. css prop에서 theme 객체 사용**
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { css, ThemeProvider } from '@emotion/react';
+
+const theme = {
+  colors: {
+    primary: 'hotpink'
+  }
+};
+
+render(
+	<ThemeProvider theme={theme}>
+  	<div css={theme => ({ color: theme.colors.primary })}>
+      Themed Component
+    </div>
+  </ThemeProvider>
+)
+```
+
+&nbsp;  
+
+**2. styled 컴포넌트에서 theme 객체 사용**
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { ThemeProvider } from '@emotion/react';
+import styled from '@emotion/styled'
+
+const theme = {
+  colors: {
+    primary: 'hotpink'
+  }
+};
+
+const ThemedComp = styled.div`
+	color: ${props => props.theme.colors.primary}
+`;
+
+render(
+	<ThemeProvider theme={theme}>
+    <ThemedComp>Themed Component</ThemedComp>
+  </ThemeProvider>
+)
+```
+
+&nbsp;  
+
+**3. useTheme hook 사용**
+
+```tsx
+/** @jsxImportSource @emotion/react */
+import { ThemeProvider, useTheme } from '@emotion/react';
+
+const theme = {
+  colors: {
+    primary: 'hotpink'
+  }
+};
+
+const ThemedComp = () => {
+  const theme = useTheme();
+  
+  return (
+  	<div css={{ color: theme.colors.primary }}>
+    	Themed Component
+    </div>
+  )
+}
+
+render(
+	<ThemeProvider theme={theme}>
+  	<ThemedComp />
+  </ThemeProvider>
+)
+```
+
+&nbsp;  
+
+2개 이상의 중첩된  `ThemeProvider` 사용하여 새로운 theme을 만들어 낼 수도 있다. 예제는 [이 곳](https://emotion.sh/docs/theming#themeprovider-reactcomponenttype)에서 확인 할 수 있다.
+
